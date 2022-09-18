@@ -1,0 +1,78 @@
+/* firefox on Ubuntu bug */
+input[type="range"] {
+  background: none;
+}
+
+#codeOut, #codeIn {
+  font-family: Menlo, Consolas, 'DejaVu Sans Mono', monospace;
+}
+
+#codeOut {
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+/* Safari 15/iOS 15 workaround */
+#codeOut span {
+  display: inline-block;
+}
+
+span.normal {
+  color: black;
+}
+
+.mcp-comment {
+  color: gray;
+  font-style: italic;
+}
+
+.mcp-error {
+  color: white;
+  background-color: red;
+}
+
+.mcp-octave {
+  color: #5a4;
+}
+
+.mcp-instruction{
+  color: blue;
+}
+
+.mcp-note {
+  color: black;
+}
+
+.mcp-note-n {
+  color: magenta;
+}
+
+.mcp-duration {
+  color: darkmagenta;
+}
+
+.mcp-duration-instruction {
+  color: orange;
+}
+
+.mcp-decoration {
+  color: tomato;
+}
+
+span.tie {
+  color: green;
+}
+
+.selectable.playing {
+  background-color: palegreen;
+}
+.selectable.cursor {
+  background-color: gray;
+}
+.selectable.cursor.playing {
+  background-color: yellow;
+}
+
+.selectable:hover {
+  background-color: yellow;
+}

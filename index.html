@@ -1,13 +1,353 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Music code player</title>
+<script src='js/sound.js'></script>
+<script src='js/mml/MMLNote.js'></script>
+<script src='js/mascii/MasciiParser.js'></script>
+<script src='js/mascii/MasciiPart.js'></script>
+<script src='js/mascii/MasciiNote.js'></script>
+<script src='js/mascii/MasciiMeta.js'></script>
+<script src='js/mascii/MasciiContext.js'></script>
+<script src='js/mascii/MasciiPlayer.js'></script>
+<script src='js/mml/MMLPart.js'></script>
+<script src='js/mml/MMLParser.js'></script>
+<script src='js/mml/MMLPlayer.js'></script>
+<script src='js/storage.js'></script>
+<script src='js/Marker.js'></script>
+<link rel='stylesheet' href='css/player.css'>
+<link rel='stylesheet' href='css/alertbox.css'>
+<style>
+  .fftChart {
+    width:600px;
+    display: flex;
+    justify-content: center;
+  }
+  .fftData {
+    transform: scaleX(0.39);
+    display: flex;
+    justify-content: center;
+    vertical-align: middle;
+    align-items: center;
+    height: 300px;
+    width: 1536px;
+    border: 1px solid #d9d9d9;
+  }
+  .fftData > div {
+    width: 2px;
+    min-height: 2px;
+    background-color: #3692be;
+    margin-right: 1px;;
+  }
+</style>
 </head>
 <body>
+<h1>Music Code Player</h1>
+<p>Select a song: <select name="song" onchange="changeSong()">
+  <optgroup label="Builtin" id="Builtin">
+  </optgroup>
+  <optgroup label='Songs from old mus.html'>
+  </optgroup>
+  <optgroup label='Saved songs'>
+    <option value="new">New...</option>
+  </optgroup>
+</select></p>
+<div id='divEditMode'>
+  <p>Music format:
+    <select id="format">
+      <option value="mml">Music Macro Language</option>
+      <option value="mascii">Mascii</option>
+    </select>
+  </p>
+  <textarea id="codeIn" style="width: 15em; height: 15em;" oninput="event.target.dirty=true"></textarea>
+  <p>
+    <input type='button' value='Play' onclick='gotoMode("play")'>
+    <input type='button' value='Save' onclick='save()'>
+    <input type='button' value='Delete' onclick='del()'>
+    <a href='help.html'>Help!</a>
+  </p>
+</div>
+<div id='divPlayMode' style='display:none;'>
+  <p>
+    <input type='button' value='Edit' onclick='gotoMode("edit")'>
+    <input type='button' value='Save' onclick='save()'>
+    <input type='button' value='Delete' onclick='del()'>
+    <a href='help.html'>Help!</a>
+  </p>
+  <p>
+    <input type='button' id='btnPlayPause' value='Play' onclick='togglePlayPause()'>
+    <input type='button' value='Stop' onclick='stopMusic()'>
+    <label><input type='checkbox' id='chkLoopMusic'>Loop Music</label>
+  </p>
+  <p>
+    <input type='range' min='0' max='1' value='0' step='0.1' id=timeScroll oninput='seekToPos(event.target.value)' onmouseup='console.log(this.value)'><span id='timeSpan'>0:00/0:00</span>
+  </p>
+  <p>Music format: None</p>
+  <p>
+    Code:
+    <input type='button' id='btnToggleCode' value='Hide' onclick='toggleCode()'>
+    <pre id='codeOut'>code</pre>
+  </p>
+  <div class="fftChart">
+    <div id="fftData" class="fftData"></div>
+  </div>
+  <div class="fftChart">
+    <div id="fftData_Time" class="fftData"></div>
+  </div>
+  <p></p>
+</div>
 
+<!-- alert box -->
+<div class="center-of-screen grayed-out" id='prompt' style='visibility: hidden; align-items: baseline;'>
+  <form class='prompt-box' action="javascript:void 3">
+    <div class='description' id='promptMessage'></div>
+    <input id='promptInput'>
+    <div class='yesno'>
+      <button onclick="promptCallback(true)" id='promptOk'>OK</button>
+      <button onclick="promptCallback(false)" id='promptCancel'>Cancel</button>
+    </div>
+  </form>
+</div>
+<!--[if IE]>
+<div id='alert' class='alert-box alert-box-ie'>
+<![endif]-->
+<!--[if !IE]> -->
+<div id='alert' class='alert-box' style='visibility: hidden;'>
+<!-- <![endif]-->
+  <div class='title'>
+    <span>Error</span>
+    <input id='close' class='x' value='X' type='button'>
+  </div>
+  <!--[if IE]>
+  <pre class='description' id='description'>
+本網頁不支援IE。請改用Firefox或Chrome
+This website does not support IE. Please use Firefox or Chrome.
+  </pre>
+  <![endif]-->
+  <!--[if !IE]> -->
+  <pre class='description' id='description'>
+錯誤訊息會顯示在這裡
+  </pre>
+  <!-- <![endif]-->
+</div>
+<script src='js/alertbox.js'></script>
+<!-- end of alert box -->
+
+<script>
+var player;
+function gotoMode(mode){
+  divPlayMode.style.display = "none";
+  divEditMode.style.display = "none";
+  if(mode == "play"){
+    if (player) stopMusic();
+    divPlayMode.style.display = "";
     
+    while (codeOut.hasChildNodes()) codeOut.removeChild(codeOut.lastChild);
     
+    var lang = format.value;
+    if (lang == 'mml') {
+      dd = new MMLParser(codeIn.value);
+      dd.parse();
+      player = [];
+      for (var i in dd.parts) {
+        var p = new MMLPlayer(dd.parts[i]);
+        p.view = dd.marker;
+        player.push(p);
+      }
+    }
+    else if (lang == 'mascii') {
+      dd = new MasciiParser(codeIn.value);
+      dd.parse();
+      player = [new MasciiPlayer()];
+      player[0].view = dd.marker;
+      for (var i in dd.parts) {
+        player[0].addPart(dd.parts[i]);
+      }
+    }
+    codeOut.appendChild(dd.marker.toHTML());
+  }
+  if(mode == "edit"){
+    divEditMode.style.display = "";
+  }
+}
+
+function toggleCode(){
+  if(codeOut.style.display == 'none') {
+    codeOut.style.display = '';
+    btnToggleCode.value = "Hide";
+  }
+  else {
+    codeOut.style.display = 'none';
+    btnToggleCode.value = "Show";
+  }
+}
+var isPlaying = 0;
+function togglePlayPause(){
+  if (isPlaying) {
+    btnPlayPause.value = "Play";
+    for (var i = 0; i < player.length; i++) {
+      player[i].pause();
+    }
+    isPlaying = 0;
+  }
+  else {
+    btnPlayPause.value = "Pause";
+    setTimeout(function(){
+      isPlaying = 0;
+      for (var i = 0; i < player.length; i++) {
+        player[i].onended = function () {
+          console.log('onended');
+          isPlaying--;
+          this.finished = true;
+          if (isPlaying <= 0) {
+            stopMusic();
+            if (chkLoopMusic.checked) {
+              togglePlayPause();
+            }
+            else {
+              btnPlayPause.value = "Play";
+            }
+          }
+        };
+        if (!player[i].finished) isPlaying++;
+      }
+      var time = actx.currentTime;
+      for (var i = 0; i < player.length; i++) {
+        if (!player[i].finished) player[i].play();
+      }
+      getFFTData()
+    }, 50);
+
+    //讀取FFT Data並顯示
+    const getFFTData = () => {
+      const fftData = new Uint8Array(fftSize/2)
+      const fftData_Time = new Uint8Array(fftSize/2)
+      for (const k in player) {
+        const v = player[k]
+        if (!v.analyser) continue
+        const fftArray = new Uint8Array(fftSize/2)
+        v.analyser.getByteFrequencyData(fftArray)
+        fftArray.forEach((v2,k2) => fftData[k2]=fftData[k2] > v2 ? fftData[k2] : v2)
+        
+        const fftArray_Time = new Uint8Array(fftSize/2)
+        v.analyser.getByteTimeDomainData(fftArray_Time)
+        fftArray_Time.forEach((v2,k2) => fftData_Time[k2]=fftData_Time[k2] > v2 ? fftData_Time[k2] : v2)
+      }
+      
+      // console.log(fftData.map(v=>v*44100/2/(fftSize/2)))
+      for (const k in fftData) {
+        if (k>=fftSize/2) break
+        document.querySelector(`#fftData>div:nth-child(${k-0+1})`).style.height = `${fftData[k]}px`
+      }
+      for (const k in fftData_Time) {
+        if (k>=fftSize/2) break
+        document.querySelector(`#fftData_Time>div:nth-child(${k-0+1})`).style.height = `${fftData_Time[k]}px`
+      }
+      if (isPlaying) {
+        setTimeout(getFFTData,15)
+      }
+    }
+  }
+}
+function stopMusic() {
+  for (var i = 0; i < player.length; i++) {
+    player[i].onended = null;
+    player[i].stop();
+    player[i].finished = false;
+  }
+  isPlaying = 0;
+  btnPlayPause.value = "Play";
+}
+addEventListener('load',function(){
+  //loadSmp('sound/scream.wav', 'scream', {center: 72, loopStart: 0, loopEnd: 12462, attack: 0, release: 0, release2: 0.05});
+  initSongList();
+  changeSong();
+  decodePermalink();
+});
+
+function seekToPos(value) {
+  value = parseFloat(value);
+  var isPlayingBool = isPlaying > 0;
+  for (var i = 0; i < player.length; i++) {
+    player[i].onended = null;
+    player[i].stop();
+    player[i].onended = function () {
+      console.log('onended');
+      isPlaying--;
+      this.finished = true;
+      if (isPlaying <= 0) {
+        stopMusic();
+        if (chkLoopMusic.checked) {
+          togglePlayPause();
+        }
+        else {
+          btnPlayPause.value = "Play";
+        }
+      }
+    };
+    player[i].seek(value);
+    if (isPlayingBool) player[i].play();
+  }
+  if (isPlayingBool) {
+    isPlaying = player.length;
+  }
+}
+
+function toTimeString(secs) {
+  var min = Math.floor(secs / 60);
+  var sec = '0' + Math.floor(secs % 60).toFixed(0);
+  return min + ':' + sec.substring(sec.length - 2);
+}
+
+setInterval(function () {
+  var timeScroll = document.getElementById('timeScroll');
+  var timeSpan = document.getElementById('timeSpan');
+  var playTime = 0;
+  var duration = 0;
+  if (player != null && player.length > 0) {
+    for (var i = 0; i < player.length; i++) {
+      playTime = Math.max(player[i].getCurrentPos(), playTime);
+      duration = Math.max(player[i].duration, duration);
+    }
+    timeScroll.setAttribute('max', duration);
+    timeScroll.value = playTime;
+    timeSpan.textContent = toTimeString(playTime) + '/' + toTimeString(duration);
+  }
+}, 100);
+
+onbeforeunload = function () {
+  if (codeIn.dirty) {
+    return 'You have unsaved changes. Really want to quit?';
+  }
+  return null;
+};
+
+onfocus = function () {
+  if (actx.state === 'suspended') {
+    actx.resume();
+  }
+};
+
+//初始song Builtin option
+for (const k in song_mml) {
+  const v = song_mml[k]
+  const dom = document.createElement('option')
+  dom.value = k
+  dom.textContent = k
+  document.querySelector('#Builtin').append(dom)
+}
+
+
+//繪製FFT頻譜圖
+for (let i=0;i<fftSize/2;i++) {
+  const fftDataDom = document.createElement('div')
+  fftDataDom.style.background = `rgba(${255-i/2},${i/2*2},0,1)`
+  document.querySelector('#fftData').append(fftDataDom)
+  document.querySelector('#fftData_Time').append(fftDataDom.cloneNode())
+}
+
+</script>
 </body>
 </html>
