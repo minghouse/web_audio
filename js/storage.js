@@ -107,17 +107,7 @@ function changeSong(){
   var songSelect = document.getElementsByName('song')[0];
   var dirty = document.getElementById('codeIn').dirty;
   var name = songSelect.value;
-  if (songSelect.previousSelection && dirty && name !== songSelect.previousSelection) {
-    confirmBox('You have unsaved changes. Really want to change song?', function (yes) {
-      if (yes) {
-        confirmChangeSong(name);
-      } else {
-        songSelect.value = songSelect.previousSelection;
-      }
-    });
-  } else {
-    confirmChangeSong(name);
-  }
+  confirmChangeSong(name);
 }
 
 function confirmChangeSong(name){
@@ -144,6 +134,7 @@ function confirmChangeSong(name){
   document.getElementById('codeIn').value = code;
   document.getElementById('codeIn').dirty = false;
   songSelect.previousSelection = name;
+  gotoMode("play")
 }
 
 function save(){

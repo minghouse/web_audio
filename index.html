@@ -45,9 +45,8 @@
 </head>
 <body>
 <h1>Music Code Player</h1>
-<p>Select a song: <select name="song" onchange="changeSong()">
-  <optgroup label="Builtin" id="Builtin">
-  </optgroup>
+<p>Select a song: <select id="song" name="song" onchange="changeSong()">
+  <option value="new">New...</option>
 </select></p>
 <div id='divEditMode'>
   <!-- <p>Music format:
@@ -323,15 +322,16 @@ onfocus = function () {
   }
 };
 
-//初始song Builtin option
+//初始#song option
 for (const k in song_mml) {
   const v = song_mml[k]
   const dom = document.createElement('option')
   dom.value = k
   dom.textContent = k
-  document.querySelector('#Builtin').append(dom)
+  document.querySelector('#song').append(dom)
 }
-
+const song_option_first = document.querySelector('#song option:nth-child(2)').value
+document.querySelector('#song').value = song_option_first
 
 //繪製FFT頻譜圖
 for (let i=0;i<fftSize/2;i++) {
