@@ -48,33 +48,26 @@
 <p>Select a song: <select name="song" onchange="changeSong()">
   <optgroup label="Builtin" id="Builtin">
   </optgroup>
-  <optgroup label='Songs from old mus.html'>
-  </optgroup>
-  <optgroup label='Saved songs'>
-    <option value="new">New...</option>
-  </optgroup>
 </select></p>
 <div id='divEditMode'>
-  <p>Music format:
+  <!-- <p>Music format:
     <select id="format">
       <option value="mml">Music Macro Language</option>
       <option value="mascii">Mascii</option>
     </select>
-  </p>
+  </p> -->
   <textarea id="codeIn" style="width: 15em; height: 15em;" oninput="event.target.dirty=true"></textarea>
   <p>
     <input type='button' value='Play' onclick='gotoMode("play")'>
-    <input type='button' value='Save' onclick='save()'>
-    <input type='button' value='Delete' onclick='del()'>
-    <a href='help.html'>Help!</a>
+    <!-- <input type='button' value='Save' onclick='save()'>
+    <input type='button' value='Delete' onclick='del()'> -->
   </p>
 </div>
 <div id='divPlayMode' style='display:none;'>
   <p>
     <input type='button' value='Edit' onclick='gotoMode("edit")'>
-    <input type='button' value='Save' onclick='save()'>
-    <input type='button' value='Delete' onclick='del()'>
-    <a href='help.html'>Help!</a>
+    <!-- <input type='button' value='Save' onclick='save()'>
+    <input type='button' value='Delete' onclick='del()'> -->
   </p>
   <p>
     <input type='button' id='btnPlayPause' value='Play' onclick='togglePlayPause()'>
@@ -84,11 +77,11 @@
   <p>
     <input type='range' min='0' max='1' value='0' step='0.1' id=timeScroll oninput='seekToPos(event.target.value)' onmouseup='console.log(this.value)'><span id='timeSpan'>0:00/0:00</span>
   </p>
-  <p>Music format: None</p>
+  <!-- <p>Music format: None</p> -->
   <p>
     Code:
-    <input type='button' id='btnToggleCode' value='Hide' onclick='toggleCode()'>
-    <pre id='codeOut'>code</pre>
+    <input type='button' id='btnToggleCode' value='Show' onclick='toggleCode()'>
+    <pre id='codeOut' style="display:none">code</pre>
   </p>
   <div class="fftChart">
     <div id="fftData" class="fftData"></div>
@@ -146,7 +139,7 @@ function gotoMode(mode){
     
     while (codeOut.hasChildNodes()) codeOut.removeChild(codeOut.lastChild);
     
-    var lang = format.value;
+    var lang = (document.querySelector('#format') || {}).value || 'mml';
     if (lang == 'mml') {
       dd = new MMLParser(codeIn.value);
       dd.parse();
