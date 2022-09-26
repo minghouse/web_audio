@@ -1,0 +1,33 @@
+ul.piano_keyboard, .piano_keyboard li {
+    box-sizing: border-box;
+}
+ul.piano_keyboard {
+    width: 100%;
+    height: 200px;
+    margin: 0;
+    padding: 0;
+    position: relative;
+}
+.piano_keyboard li {
+    list-style: none;
+}
+.piano_keyboard .keyboard {
+    transition: background-color .1s ease 0s;
+}
+.piano_keyboard .keyboard:active, .piano_keyboard .keyboard.active {
+    background-color: #DFFF30;
+}
+.piano_keyboard .keyboard-white {
+    float: left;
+    width: calc(100% / 52);
+    height: 100%;
+    border: 1px solid black;
+}
+.piano_keyboard .keyboard-black {
+    height: calc(200px * 0.6);
+    position: absolute;
+    top: 0;
+    width: calc(100% / 88);
+    background-color: black;
+    border: 2px solid black;
+}

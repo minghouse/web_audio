@@ -19,6 +19,7 @@
 <script src='js/Marker.js'></script>
 <link rel='stylesheet' href='css/player.css'>
 <link rel='stylesheet' href='css/alertbox.css'>
+<link rel='stylesheet' href='./waapi-piano/piano/css/index.css'>
 <style>
   .fftChart {
     width:600px;
@@ -82,6 +83,106 @@
     <input type='button' id='btnToggleCode' value='Show' onclick='toggleCode()'>
     <pre id='codeOut' style="display:none">code</pre>
   </p>
+
+  <ul class="piano_keyboard">
+    <li class="keyboard keyboard-white"></li>
+    <li class="keyboard keyboard-black"></li>
+    <li class="keyboard keyboard-white"></li>
+
+    <li class="keyboard keyboard-white"></li>
+    <li class="keyboard keyboard-black"></li>
+    <li class="keyboard keyboard-white"></li>
+    <li class="keyboard keyboard-black"></li>
+    <li class="keyboard keyboard-white"></li>
+    <li class="keyboard keyboard-white"></li>
+    <li class="keyboard keyboard-black"></li>
+    <li class="keyboard keyboard-white"></li>
+    <li class="keyboard keyboard-black"></li>
+    <li class="keyboard keyboard-white"></li>
+    <li class="keyboard keyboard-black"></li>
+    <li class="keyboard keyboard-white"></li>
+
+    <li class="keyboard keyboard-white"></li>
+    <li class="keyboard keyboard-black"></li>
+    <li class="keyboard keyboard-white"></li>
+    <li class="keyboard keyboard-black"></li>
+    <li class="keyboard keyboard-white"></li>
+    <li class="keyboard keyboard-white"></li>
+    <li class="keyboard keyboard-black"></li>
+    <li class="keyboard keyboard-white"></li>
+    <li class="keyboard keyboard-black"></li>
+    <li class="keyboard keyboard-white"></li>
+    <li class="keyboard keyboard-black"></li>
+    <li class="keyboard keyboard-white"></li>
+
+    <li class="keyboard keyboard-white"></li>
+    <li class="keyboard keyboard-black"></li>
+    <li class="keyboard keyboard-white"></li>
+    <li class="keyboard keyboard-black"></li>
+    <li class="keyboard keyboard-white"></li>
+    <li class="keyboard keyboard-white"></li>
+    <li class="keyboard keyboard-black"></li>
+    <li class="keyboard keyboard-white"></li>
+    <li class="keyboard keyboard-black"></li>
+    <li class="keyboard keyboard-white"></li>
+    <li class="keyboard keyboard-black"></li>
+    <li class="keyboard keyboard-white"></li>
+
+    <li class="keyboard keyboard-white"></li>
+    <li class="keyboard keyboard-black"></li>
+    <li class="keyboard keyboard-white"></li>
+    <li class="keyboard keyboard-black"></li>
+    <li class="keyboard keyboard-white"></li>
+    <li class="keyboard keyboard-white"></li>
+    <li class="keyboard keyboard-black"></li>
+    <li class="keyboard keyboard-white"></li>
+    <li class="keyboard keyboard-black"></li>
+    <li class="keyboard keyboard-white"></li>
+    <li class="keyboard keyboard-black"></li>
+    <li class="keyboard keyboard-white"></li>
+
+    <li class="keyboard keyboard-white"></li>
+    <li class="keyboard keyboard-black"></li>
+    <li class="keyboard keyboard-white"></li>
+    <li class="keyboard keyboard-black"></li>
+    <li class="keyboard keyboard-white"></li>
+    <li class="keyboard keyboard-white"></li>
+    <li class="keyboard keyboard-black"></li>
+    <li class="keyboard keyboard-white"></li>
+    <li class="keyboard keyboard-black"></li>
+    <li class="keyboard keyboard-white"></li>
+    <li class="keyboard keyboard-black"></li>
+    <li class="keyboard keyboard-white"></li>
+
+    <li class="keyboard keyboard-white"></li>        
+    <li class="keyboard keyboard-black"></li>
+    <li class="keyboard keyboard-white"></li>
+    <li class="keyboard keyboard-black"></li>
+    <li class="keyboard keyboard-white"></li>
+    <li class="keyboard keyboard-white"></li>
+    <li class="keyboard keyboard-black"></li>
+    <li class="keyboard keyboard-white"></li>
+    <li class="keyboard keyboard-black"></li>
+    <li class="keyboard keyboard-white"></li>
+    <li class="keyboard keyboard-black"></li>
+    <li class="keyboard keyboard-white"></li>
+
+    <li class="keyboard keyboard-white"></li>        
+    <li class="keyboard keyboard-black"></li>
+    <li class="keyboard keyboard-white"></li>
+    <li class="keyboard keyboard-black"></li>
+    <li class="keyboard keyboard-white"></li>
+    <li class="keyboard keyboard-white"></li>
+    <li class="keyboard keyboard-black"></li>
+    <li class="keyboard keyboard-white"></li>
+    <li class="keyboard keyboard-black"></li>
+    <li class="keyboard keyboard-white"></li>
+    <li class="keyboard keyboard-black"></li>
+    <li class="keyboard keyboard-white"></li>
+
+    <li class="keyboard keyboard-white"></li>
+  </ul>
+
   <div class="fftChart">
     <div id="fftData" class="fftData"></div>
   </div>
@@ -126,6 +227,8 @@ This website does not support IE. Please use Firefox or Chrome.
 </div>
 <script src='js/alertbox.js'></script>
 <!-- end of alert box -->
+
+<script type="text/javascript" src="./waapi-piano/piano/js/index.js"></script>
 
 <script>
 var player;
