@@ -312,38 +312,38 @@ function togglePlayPause(){
       for (var i = 0; i < player.length; i++) {
         if (!player[i].finished) player[i].play();
       }
-      getFFTData()
+      //getFFTData()
     }, 50);
 
-    //讀取FFT Data並顯示
-    const getFFTData = () => {
-      const fftData = new Uint8Array(fftSize/2)
-      const fftData_Time = new Uint8Array(fftSize/2)
-      for (const k in player) {
-        const v = player[k]
-        if (!v.analyser) continue
-        const fftArray = new Uint8Array(fftSize/2)
-        v.analyser.getByteFrequencyData(fftArray)
-        fftArray.forEach((v2,k2) => fftData[k2]=fftData[k2] > v2 ? fftData[k2] : v2)
+    // //讀取FFT Data並顯示
+    // const getFFTData = () => {
+    //   const fftData = new Uint8Array(fftSize/2)
+    //   const fftData_Time = new Uint8Array(fftSize/2)
+    //   for (const k in player) {
+    //     const v = player[k]
+    //     if (!v.analyser) continue
+    //     const fftArray = new Uint8Array(fftSize/2)
+    //     v.analyser.getByteFrequencyData(fftArray)
+    //     fftArray.forEach((v2,k2) => fftData[k2]=fftData[k2] > v2 ? fftData[k2] : v2)
         
-        const fftArray_Time = new Uint8Array(fftSize/2)
-        v.analyser.getByteTimeDomainData(fftArray_Time)
-        fftArray_Time.forEach((v2,k2) => fftData_Time[k2]=fftData_Time[k2] > v2 ? fftData_Time[k2] : v2)
-      }
+    //     const fftArray_Time = new Uint8Array(fftSize/2)
+    //     v.analyser.getByteTimeDomainData(fftArray_Time)
+    //     fftArray_Time.forEach((v2,k2) => fftData_Time[k2]=fftData_Time[k2] > v2 ? fftData_Time[k2] : v2)
+    //   }
       
-      // console.log(fftData.map(v=>v*44100/2/(fftSize/2)))
-      for (const k in fftData) {
-        if (k>=fftSize/2) break
-        document.querySelector(`#fftData>div:nth-child(${k-0+1})`).style.height = `${fftData[k]}px`
-      }
-      for (const k in fftData_Time) {
-        if (k>=fftSize/2) break
-        document.querySelector(`#fftData_Time>div:nth-child(${k-0+1})`).style.height = `${fftData_Time[k]}px`
-      }
-      if (isPlaying) {
-        setTimeout(getFFTData,15)
-      }
-    }
+    //   // console.log(fftData.map(v=>v*44100/2/(fftSize/2)))
+    //   for (const k in fftData) {
+    //     if (k>=fftSize/2) break
+    //     document.querySelector(`#fftData>div:nth-child(${k-0+1})`).style.height = `${fftData[k]}px`
+    //   }
+    //   for (const k in fftData_Time) {
+    //     if (k>=fftSize/2) break
+    //     document.querySelector(`#fftData_Time>div:nth-child(${k-0+1})`).style.height = `${fftData_Time[k]}px`
+    //   }
+    //   if (isPlaying) {
+    //     setTimeout(getFFTData,15)
+    //   }
+    // }
   }
 }
 function stopMusic() {
