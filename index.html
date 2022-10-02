@@ -73,6 +73,7 @@
     <input type='button' id='btnPlayPause' value='Play' onclick='togglePlayPause()'>
     <input type='button' value='Stop' onclick='stopMusic()'>
     <label><input type='checkbox' id='chkLoopMusic'>Loop Music</label>
+    <label><input type='checkbox' id='frequency432'>432HZ</label>
   </p>
   <p>
     <input type='range' min='0' max='1' value='0' step='0.1' id=timeScroll oninput='seekToPos(event.target.value)' onmouseup='console.log(this.value)'><span id='timeSpan'>0:00/0:00</span>
@@ -354,6 +355,8 @@ function stopMusic() {
   }
   isPlaying = 0;
   btnPlayPause.value = "Play";
+  const piano_keyboard = document.querySelectorAll('.piano_keyboard .keyboard')
+  piano_keyboard.forEach(v=>v.classList.remove('active'))
 }
 addEventListener('load',function(){
   //loadSmp('sound/scream.wav', 'scream', {center: 72, loopStart: 0, loopEnd: 12462, attack: 0, release: 0, release2: 0.05});
@@ -444,6 +447,23 @@ for (let i=0;i<fftSize/2;i++) {
   document.querySelector('#fftData_Time').append(fftDataDom.cloneNode())
 }
 
+//綁定432HZ切換
+document.querySelector('#frequency432').addEventListener('change', (e)=>{
+  const f = e.target.checked ? 432 : 440
+  piano.setFrequency(f)
+})
+
+//離開頁面就暫停撥放
+let auto_play = false
+document.addEventListener("visibilitychange", function() {
+  if (document.visibilityState == 'hidden' && isPlaying) {
+    togglePlayPause()
+    auto_play = true
+  }
+  if (document.visibilityState == 'visible' && auto_play) {
+    togglePlayPause()
+  }
+});
 </script>
 </body>
 </html>

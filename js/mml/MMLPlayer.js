@@ -97,6 +97,7 @@ MMLPlayer.prototype.playSmallSegment = function (to, first) {
     if (!first && n.tieBefore) continue;
     if (n.type === "rest") {
     } else if (n.type === "note") {
+      piano.setVolume(n.volume)
       // this.playSound(n, i);
     }
   }

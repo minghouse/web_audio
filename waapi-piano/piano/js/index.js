@@ -1,17 +1,20 @@
 (async () => {
     'use strict';
 
-    var isSP, ctx, frequencyRatioTempered, keyboards;
+    const fftSize = 1024 
+    const frequencyRatio = (Math.pow(2, 1 / 12) ** (52 - 49)) //基準音C5
+    let frequency = 440
+    let volume = 0.5
 
     // コンテキストを生成
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
-    ctx = new AudioContext();
+    const ctx = new AudioContext()
 
     const analyser = ctx.createAnalyser()
     analyser.fftSize = fftSize
 
     // 音源ファイルをバイナリデータとして取得
-    const data = await new Promise((resolve, reject) => {
+    const piano_audio_data = await new Promise((resolve, reject) => {
         const xml = new XMLHttpRequest();
         xml.responseType = 'arraybuffer';
         xml.open('GET', 'waapi-piano/piano/media/German Concert D 072 083.ogg', true); //這是
@@ -31,39 +34,36 @@
         xml.send();
     })
 
-    isSP = typeof window.ontouchstart !== 'undefined';
-
-    // 平均律における、ある音の次の音に対する周波数比(近似値)
-    frequencyRatioTempered = 1.059463;
+    const isSP = typeof window.ontouchstart !== 'undefined';
 
     // 鍵盤要素の集合を配列化する
-    keyboards = Array.prototype.slice.call(
-        document.getElementsByClassName('keyboard')
-    );
+    const keyboards = Array.prototype.slice.call(
+        document.querySelectorAll('.keyboard')
+    )
 
     //方法1
+    const piano_audio = []
     keyboards.slice(0).map(function (keyboard, index) {
-        var i, frequencyRatio;
-        // 基準音から何音はなれているかで、周波数比を求める
-        frequencyRatio = (Math.pow(2, 1 / 12) ** (52 - 49)) * 440;
-        frequencyRatio = (Math.pow(2, 1 / 12) ** (index + 1 - 49)) * 440 / frequencyRatio;
+        //以基準音轉換為等比音並且判斷是否轉為432HZ
+        const playbackRate = (Math.pow(2, 1 / 12) ** (index + 1 - 49)) / frequencyRatio * frequency / 440
+        
         keyboard.addEventListener(isSP ? 'touchstart' : 'click', function () {
-            var bufferSource;
-            bufferSource = ctx.createBufferSource();
-            bufferSource.buffer = data;
-            // 音源再生速度の比率変更で、音源の高さを調整
-            bufferSource.playbackRate.value = frequencyRatio;
-            bufferSource.connect(ctx.destination);
-            
-            bufferSource.connect(analyser)
-            bufferSource.start(0);
+            const bufferSource = ctx.createBufferSource();
+            const gainNode = ctx.createGain()
+            bufferSource.buffer = piano_audio_data
+            bufferSource.playbackRate.value = playbackRate
+            gainNode.gain.value = volume //音量
+            bufferSource.connect(gainNode)
+            gainNode.connect(ctx.destination)
+            gainNode.connect(analyser)
+            bufferSource.start(0)
+            bufferSource.stop(bufferSource.context.currentTime + Math.E)
         });
     });
 
     //方法2
     // keyboards.map(async (keyboard, index) => {
-    //     console.log(index)
-    //     const data = await new Promise((resolve, reject) => {
+    //     const piano_audio_data = await new Promise((resolve, reject) => {
     //         const xml = new XMLHttpRequest();
     //         xml.responseType = 'arraybuffer';
     //         xml.open('GET', `waapi-piano/piano/media/German Concert D ${(index-0+21).toString().padStart(3, '0')} 083.ogg`, true); //這是C5，第52號鍵
@@ -84,10 +84,13 @@
     //     keyboard.addEventListener(isSP ? 'touchstart' : 'click', function() {
     //         var bufferSource;
     //         bufferSource = ctx.createBufferSource();
-    //         bufferSource.buffer = data;
+    //         bufferSource.buffer = piano_audio_data;
     //         // 音源再生速度の比率変更で、音源の高さを調整
     //         bufferSource.playbackRate.value = 1;
-    //         bufferSource.connect(ctx.destination);
+    //         gainNode.gain.value = volume // 音量  
+    //         bufferSource.connect(gainNode)
+    //         gainNode.connect(ctx.destination)
+    //         // bufferSource.connect(ctx.destination)
     //         bufferSource.connect(analyser)
     //         bufferSource.start(0);
     //     });
@@ -131,4 +134,14 @@
     //   }
     }
     getFFTData()
+
+    window.piano = {
+        ctx,
+        setVolume: (v) => {
+            volume = v
+        },
+        setFrequency: (v) => {
+            frequency = v
+        }
+    }
 })();
