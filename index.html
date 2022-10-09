@@ -27,6 +27,7 @@
     justify-content: center;
   }
   .fftData {
+    /* transform: scaleX(0.39); */
     transform: scaleX(0.39);
     display: flex;
     justify-content: center;
@@ -40,7 +41,12 @@
     width: 2px;
     min-height: 2px;
     background-color: #3692be;
-    margin-right: 1px;;
+    /* margin-right: 1px;; */
+  }
+
+  #myChart {
+    min-width: 400px;
+    min-height: 400px;
   }
 </style>
 </head>
@@ -184,6 +190,11 @@
     <li class="keyboard keyboard-white"></li>
   </ul>
 
+  <div>
+    <canvas id="myChart"></canvas>
+  </div>
+  
+
   <div class="fftChart">
     <div id="fftData" class="fftData"></div>
   </div>
@@ -229,6 +240,7 @@ This website does not support IE. Please use Firefox or Chrome.
 <script src='js/alertbox.js'></script>
 <!-- end of alert box -->
 
+<script type="text/javascript" src="./js/Chart.js/dist/chart.umd.js"></script>
 <script type="text/javascript" src="./waapi-piano/piano/js/index.js"></script>
 
 <script>

@@ -128,7 +128,7 @@ const song_mml = {
 
 function initSongList(){
   var songList = document.getElementsByName('song')[0];
-  console.log(songList);
+  // console.log(songList);
   if(!localStorage.volatileMus_SongList){
     localStorage.setItem('volatileMus_SongList', '{}');
   }
@@ -137,7 +137,7 @@ function initSongList(){
   }
   oldSongs = JSON.parse(localStorage.volatileMus_SongList);
   songs = JSON.parse(localStorage.musicCode_SongList);
-  console.log(songs);
+  // console.log(songs);
   var customSongList = songList.children[1];
   for(var name in oldSongs){
     customSongList.appendChild(new Option(name, "c" + name));

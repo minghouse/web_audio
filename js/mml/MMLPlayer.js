@@ -174,7 +174,7 @@ MMLPlayer.prototype.showPlaying = function (to, first) {
   for (var i = 0; i < notes.length; i++) {
     if (notes[i].endTime <= to) {
       var n = notes[i];
-      const pitch = (Math.floor(n.pitch / 12) - (Math.floor(n.pitch / 12)?1:-1) ) * 12 + 4 + (n.pitch % 12) - 1
+      const pitch = (Math.floor(n.pitch / 12) - (Math.floor(n.pitch / 12)?1:-1) ) * 12 + 4 + (n.pitch % 12) - 1 - 12
       if (n.pitch > 0 && piano_keyboard[pitch]) {
         piano_keyboard[pitch].classList.remove('active')
       }
@@ -198,7 +198,7 @@ MMLPlayer.prototype.showPlaying = function (to, first) {
     if (!first && n.tieBefore) continue;
     //if (n.type === "rest") continue;
     // console.log(n,i)
-    const pitch = (Math.floor(n.pitch / 12) - (Math.floor(n.pitch / 12)?1:-1) ) * 12 + 4 + (n.pitch % 12) - 1
+    const pitch = (Math.floor(n.pitch / 12) - (Math.floor(n.pitch / 12)?1:-1) ) * 12 + 4 + (n.pitch % 12) - 1 - 12
     // console.log(n.pitch,pitch)
     if (n.pitch > 0 && piano_keyboard[pitch]) {
       piano_keyboard[pitch].classList.add('active')
