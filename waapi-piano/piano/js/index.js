@@ -216,7 +216,9 @@
 
     window.piano = {
         init,
-        ctx,
+        ctx: ()=> {
+            return ctx
+        },
         setVolume: (v) => {
             volume = v
         },

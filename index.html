@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Music code player</title>
-<script src='js/sound.js'></script>
+<!-- <script src='js/sound.js'></script> -->
 <script src='js/mml/MMLNote.js'></script>
 <script src='js/mascii/MasciiParser.js'></script>
 <script src='js/mascii/MasciiPart.js'></script>
@@ -303,8 +303,9 @@ async function togglePlayPause(){
   }
   else {
     btnPlayPause.value = "Pause";
-    if (!window.piano.ctx) {
+    if (!window.piano.ctx()) {
       await window.piano.init()
+      window.actx = window.piano.ctx()
     }
     // setTimeout(function(){
       isPlaying = 0;
@@ -438,11 +439,11 @@ onbeforeunload = function () {
   return null;
 };
 
-onfocus = function () {
-  if (actx.state === 'suspended') {
-    actx.resume();
-  }
-};
+// onfocus = function () {
+//   if (actx.state === 'suspended') {
+//     actx.resume();
+//   }
+// };
 
 //初始#song option
 for (const k in song_mml) {
