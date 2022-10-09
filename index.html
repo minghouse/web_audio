@@ -293,7 +293,7 @@ function toggleCode(){
   }
 }
 var isPlaying = 0;
-function togglePlayPause(){
+async function togglePlayPause(){
   if (isPlaying) {
     btnPlayPause.value = "Play";
     for (var i = 0; i < player.length; i++) {
@@ -303,6 +303,9 @@ function togglePlayPause(){
   }
   else {
     btnPlayPause.value = "Pause";
+    if (!window.piano.ctx) {
+      await window.piano.init()
+    }
     // setTimeout(function(){
       isPlaying = 0;
       for (var i = 0; i < player.length; i++) {
