@@ -467,15 +467,15 @@ document.querySelector('#frequency432').addEventListener('change', (e)=>{
 
 //離開頁面就暫停撥放
 let auto_play = false
-document.addEventListener("visibilitychange", function() {
-  if (document.visibilityState == 'hidden' && isPlaying) {
-    togglePlayPause()
-    auto_play = true
-  }
-  if (document.visibilityState == 'visible' && auto_play) {
-    togglePlayPause()
-  }
-});
+// document.addEventListener("visibilitychange", function() {
+//   if (document.visibilityState == 'hidden' && isPlaying) {
+//     togglePlayPause()
+//     auto_play = true
+//   }
+//   if (document.visibilityState == 'visible' && auto_play) {
+//     togglePlayPause()
+//   }
+// });
 </script>
 </body>
 </html>
