@@ -190,6 +190,7 @@
     <li class="keyboard keyboard-white"></li>
   </ul>
 
+  <div id="myMssage"></div>
   <div>
     <canvas id="myChart"></canvas>
   </div>
@@ -302,7 +303,7 @@ function togglePlayPause(){
   }
   else {
     btnPlayPause.value = "Pause";
-    setTimeout(function(){
+    // setTimeout(function(){
       isPlaying = 0;
       for (var i = 0; i < player.length; i++) {
         player[i].onended = function () {
@@ -326,7 +327,7 @@ function togglePlayPause(){
         if (!player[i].finished) player[i].play();
       }
       //getFFTData()
-    }, 50);
+    // }, 100);
 
     // //讀取FFT Data並顯示
     // const getFFTData = () => {
