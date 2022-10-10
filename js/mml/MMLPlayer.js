@@ -1,4 +1,4 @@
-const fftSize=1024
+const isSP = typeof window.ontouchstart !== 'undefined';
 function MMLPlayer(part) {
   this.notes = part.notes;
   this.playPos = 0;
@@ -116,10 +116,6 @@ MMLPlayer.prototype.playSound = function (note, id) {
   src.connect(env);
   
   env.connect(master);
-
-  this.analyser = actx.createAnalyser()
-  this.analyser.fftSize = fftSize
-  master.connect(this.analyser)
     
   var startTime = this.startTime + note.startTime;
   var nn = note;
@@ -202,7 +198,11 @@ MMLPlayer.prototype.showPlaying = function (to, first) {
     // console.log(n.pitch,pitch)
     if (n.pitch > 0 && piano_keyboard[pitch]) {
       piano_keyboard[pitch].classList.add('active')
-      piano_keyboard[pitch].click()
+      if (isSP) {
+        piano_keyboard[pitch].dispatchEvent(new TouchEvent("touchstart"))
+      } else {
+        piano_keyboard[pitch].click()
+      }
     }
     this.showNote(n, i);
   }

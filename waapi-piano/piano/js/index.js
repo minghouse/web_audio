@@ -215,6 +215,7 @@
     }
 
     window.piano = {
+        fftSize,
         init,
         ctx: ()=> {
             return ctx

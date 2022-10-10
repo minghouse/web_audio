@@ -457,7 +457,7 @@ const song_option_first = document.querySelector('#song option:nth-child(2)').va
 document.querySelector('#song').value = song_option_first
 
 //繪製FFT頻譜圖
-for (let i=0;i<fftSize/2;i++) {
+for (let i=0;i<window.piano.fftSize/2;i++) {
   const fftDataDom = document.createElement('div')
   fftDataDom.style.background = `rgba(${255-i/2},${i/2*2},0,1)`
   document.querySelector('#fftData').append(fftDataDom)
