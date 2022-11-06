@@ -13,7 +13,7 @@
         ctx = new AudioContext()
 
         analyser = ctx.createAnalyser()
-        analyser.fftSize = fftSize
+        analyser.fftSize = fftSize *2
 
         const ctx_gainNode = ctx.createGain()
         // ctx_gainNode.connect(analyser)
@@ -29,10 +29,19 @@
         biquad2.frequency.value = (Math.pow(2, 1 / 12) ** (1 - 49)) * frequency
         biquad2.Q.value = 0
 
+        const compressor = ctx.createDynamicsCompressor();
+        compressor.threshold.setValueAtTime(-12, ctx.currentTime);
+        compressor.knee.setValueAtTime(0, ctx.currentTime);
+        compressor.ratio.setValueAtTime(4, ctx.currentTime);
+        compressor.attack.setValueAtTime(0.05, ctx.currentTime);
+        compressor.release.setValueAtTime(0.25, ctx.currentTime);
+
         ctx_gainNode.connect(biquad1)
         biquad1.connect(biquad2)
-        biquad2.connect(ctx.destination)
-        biquad2.connect(analyser)
+        
+        biquad2.connect(compressor);
+        compressor.connect(ctx.destination)
+        compressor.connect(analyser)
 
         // 音源ファイルをバイナリデータとして取得
         const piano_audio_data = await new Promise((resolve, reject) => {
