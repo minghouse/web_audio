@@ -30,11 +30,11 @@
         biquad2.Q.value = 0
 
         const compressor = ctx.createDynamicsCompressor();
-        compressor.threshold.setValueAtTime(-12, ctx.currentTime);
-        compressor.knee.setValueAtTime(0, ctx.currentTime);
-        compressor.ratio.setValueAtTime(4, ctx.currentTime);
-        compressor.attack.setValueAtTime(0.05, ctx.currentTime);
-        compressor.release.setValueAtTime(0.25, ctx.currentTime);
+        compressor.threshold.setValueAtTime(10, ctx.currentTime);
+        compressor.knee.setValueAtTime(40, ctx.currentTime);
+        compressor.ratio.setValueAtTime(20, ctx.currentTime);
+        compressor.attack.setValueAtTime(10.5, ctx.currentTime);
+        compressor.release.setValueAtTime(10.25, ctx.currentTime);
 
         ctx_gainNode.connect(biquad1)
         biquad1.connect(biquad2)
