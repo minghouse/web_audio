@@ -91,6 +91,9 @@
     <pre id='codeOut' style="display:none">code</pre>
   </p>
 
+  <div id="piano_duration">
+
+  </div>
   <ul class="piano_keyboard">
     <li class="keyboard keyboard-white"></li>
     <li class="keyboard keyboard-black"></li>
@@ -265,6 +268,8 @@ function gotoMode(mode){
         p.view = dd.marker;
         player.push(p);
       }
+      //繪製時間軸
+      draw_duration(player)
     }
     else if (lang == 'mascii') {
       dd = new MasciiParser(codeIn.value);
@@ -469,6 +474,62 @@ document.querySelector('#frequency432').addEventListener('change', (e)=>{
   const f = e.target.checked ? 432 : 440
   piano.setFrequency(f)
 })
+
+//繪製時間軸
+const duration_height_zoom = 120 //音符長條圖放大倍率
+const draw_duration = (player) => {
+  // console.log(player)
+  const piano_keyboard = document.querySelectorAll('.piano_keyboard .keyboard')
+  const dom = document.querySelector('#piano_duration')
+  dom.childNodes.forEach(v=>v.remove())
+  // const keyboard_white_left = 100 / 52
+  // const keyboard_black_left = 
+  const duration = Math.max(...player.map(v => v.duration))
+  const duration_color = [
+    '#ff4e8f', '#e44eff', '#7a4eff', '#4eceff', '#4effc6', '#4eff53', '#ffe14e',
+    '#efa9ea', '#a9c5ef', '#9effed', '#b1ff9e', '#f5ff9e', '#ffc69e', '#ff9e9e',
+
+    
+    '#ff4e8f', '#e44eff', '#7a4eff', '#4eceff', '#4effc6', '#4eff53', '#ffe14e',
+    '#efa9ea', '#a9c5ef', '#9effed', '#b1ff9e', '#f5ff9e', '#ffc69e', '#ff9e9e',
+    '#ff874e'
+  ]
+
+  //新增時間軸div
+  const duration_dom = document.createElement('div')
+  duration_dom.style.height = `${duration * duration_height_zoom}px`
+  duration_dom.style.width = '100%'
+  duration_dom.style.position = 'absolute'
+  duration_dom.style.bottom = 0
+  dom.append(duration_dom)
+
+  for (const i in player) {
+    for (const n of player[i].notes) {
+      if (n.type == 'rest') continue
+      const pitch = (Math.floor(n.pitch / 12) - (Math.floor(n.pitch / 12)?1:-1) ) * 12 + 4 + (n.pitch % 12) - 1 - 12
+      const note_dom = document.createElement('div')
+      note_dom.setAttribute('data-notes', JSON.stringify({endTime:n.endTime ,startTime: n.startTime}))
+      note_dom.style.backgroundColor = duration_color[i]
+      note_dom.style.border = '1px solid black'
+      note_dom.style.height = `${(n.endTime - n.startTime) * duration_height_zoom}px`
+      note_dom.style.position = 'absolute'
+      note_dom.style.bottom = `${n.startTime * duration_height_zoom}px`
+      if (piano_keyboard[pitch].classList.contains('keyboard-black')) {
+        note_dom.style.width = `${piano_keyboard[pitch].clientWidth}px`
+        note_dom.style.left = piano_keyboard[pitch].style.left
+      } else {
+        note_dom.style.width = `${piano_keyboard[pitch].clientWidth/2}px`
+        note_dom.style.left = `${100/52*piano_keyboard[pitch].getAttribute('data-index')+0.45}%`
+      }
+      duration_dom.append(note_dom)
+    }
+  }
+}
+//移動時間軸
+const move_duration = (time) => {
+  const dom = document.querySelector('#piano_duration > div')
+  dom.style.bottom = `${0 - time * duration_height_zoom}px`
+}
 
 //離開頁面就暫停撥放
 let auto_play = false

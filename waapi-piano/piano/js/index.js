@@ -29,12 +29,19 @@
         biquad2.frequency.value = (Math.pow(2, 1 / 12) ** (1 - 49)) * frequency
         biquad2.Q.value = 0
 
-        const compressor = ctx.createDynamicsCompressor();
-        compressor.threshold.setValueAtTime(10, ctx.currentTime);
-        compressor.knee.setValueAtTime(40, ctx.currentTime);
-        compressor.ratio.setValueAtTime(20, ctx.currentTime);
-        compressor.attack.setValueAtTime(10.5, ctx.currentTime);
-        compressor.release.setValueAtTime(10.25, ctx.currentTime);
+        // const compressor = ctx.createDynamicsCompressor();
+        // compressor.threshold.setValueAtTime(10, ctx.currentTime);
+        // compressor.knee.setValueAtTime(40, ctx.currentTime);
+        // compressor.ratio.setValueAtTime(20, ctx.currentTime);
+        // compressor.attack.setValueAtTime(10.5, ctx.currentTime);
+        // compressor.release.setValueAtTime(10.25, ctx.currentTime);
+        const compressor = new DynamicsCompressorNode(ctx, {
+            threshold: -30,
+            knee: 30,
+            ratio: 12,
+            attack: 0.03,
+            release: 0.25,
+        })
 
         ctx_gainNode.connect(biquad1)
         biquad1.connect(biquad2)
@@ -186,10 +193,15 @@
     }
 
     let keyboard_black_number = 0
+    let keyboard_index_white = 0
+    let keyboard_index_black = 0
     document.querySelectorAll('.keyboard').forEach((v, k) => {
         if (v.classList.contains('keyboard-black')) {
+            v.setAttribute('data-index', keyboard_index_black++ )
             v.style.left = `${100/52*(k- keyboard_black_number)-(100/52/4)}%`
             keyboard_black_number++
+        } else {
+            v.setAttribute('data-index', keyboard_index_white++ )
         }
     })
 

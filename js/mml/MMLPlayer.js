@@ -165,6 +165,9 @@ MMLPlayer.prototype.showTimeout = function () {
 };
 
 MMLPlayer.prototype.showPlaying = function (to, first) {
+  //移動時間軸
+  move_duration(to)
+  
   const piano_keyboard = document.querySelectorAll('.piano_keyboard .keyboard')
   var notes = this.showingNotes;
   for (var i = 0; i < notes.length; i++) {
